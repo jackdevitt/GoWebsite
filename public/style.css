@@ -1,20 +1,26 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background: linear-gradient(to bottom right, #719fa3, #0ea7b5);
-    animation: gradientAnimation 10s ease infinite alternate;
+    background: linear-gradient(to bottom, #87CEFA, #1173cf);
     background-attachment: fixed;
-}
-
+  }
   
-@keyframes gradientAnimation {
+  /* Add animation to the background */
+  @keyframes gradientShift {
     0% {
-      background-position: top left;
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
     }
     100% {
-      background-position: bottom right;
+      background-position: 0% 0%;
     }
-}
+  }
+  
+  body {
+    animation: gradientShift 10s ease infinite;
+  }
 
 /* Header styles */
 #header {
