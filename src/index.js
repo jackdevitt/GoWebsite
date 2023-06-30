@@ -169,7 +169,7 @@ const App = () => {
         }
         return <div className="grid-container priority-grid">{insertion}{normalInsertion}</div>;
     } else {
-        return <h1>An Error Occured</h1>
+        return <h1>Loading...</h1>
     }
 }
 

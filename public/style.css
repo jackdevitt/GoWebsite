@@ -65,6 +65,7 @@ body {
     height: 35%;
     top: 10px;
     right: 10px;
+    padding: none;
     background: none;
     border: none;
 }
