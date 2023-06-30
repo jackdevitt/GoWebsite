@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     background: linear-gradient(to bottom right, #719fa3, #0ea7b5);
-    animation: gradientAnimation 1s ease infinite alternate;
+    animation: gradientAnimation 10s ease infinite alternate;
     background-attachment: fixed;
 }
 
@@ -172,4 +172,25 @@ body {
     outline: none;
     border-color: #666;
     box-shadow: 0 0 5px rgba(102, 102, 102, 0.3);
+}
+
+#create {
+    border: none;
+    background: none;
+}
+
+.title {
+    font-family: "Roboto", sans-serif;
+    font-size: 64px;
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 2px;  
+}
+
+.exitForm {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border: none;
+    background: none;
 }

@@ -49,6 +49,16 @@ const App = () => {
     const [description, setDescription] = useState(null)
     const [priority, setPriority] = useState(null)
 
+    const exitForm = () => {
+        console.log("HERE");
+        setName(null);
+        setDescription(null);
+        setPriority(null);
+    
+        formScreenEdit = false;
+        root.render(<App />);
+    }
+
     const handleEdit = (event) => {
         event.preventDefault();
 
@@ -87,7 +97,6 @@ const App = () => {
     }
     
     if (data != null) {
-        const listItem = {border: '2px solid black'}
         const insertion = data.Items.map(function(item) {
             if (item["topPriority"] == true) {
                 return (
@@ -124,7 +133,12 @@ const App = () => {
                     <div className="grid-container priority-grid">{insertion}{normalInsertion}</div>
                     <div className="blurCover"></div>
                     <div className = "form">
+                        <button className = "exitForm" onClick={() => exitForm()}><img src = "back.png" width = "50px" height = "50px"/></button>
                         <form className = "editForm" onSubmit={handleEdit}>
+                            <h1 className = "title">Edit</h1>
+                            <br />
+                            <br />
+                            <br />
                             <label className = "label">
                                 Name
                                 <br />
@@ -158,6 +172,7 @@ const App = () => {
         return <h1>An Error Occured</h1>
     }
 }
+
 
 function showFormEdit(id, name, desc, priority) {
     formScreenEdit = true;
