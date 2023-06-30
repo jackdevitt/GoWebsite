@@ -88,6 +88,7 @@ body {
 .task .buttons button {
     margin-right: 5px;
     background: none;
+    border: none;
 }
 
 .priority-grid {

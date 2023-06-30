@@ -47,7 +47,7 @@ function changePriority(id, status) {
 const App = () => {
     const [name, setName] = useState(null)
     const [description, setDescription] = useState(null)
-    const [priority, setPriority] = useState(false)
+    const [priority, setPriority] = useState(null)
 
     const handleEdit = (event) => {
         event.preventDefault();
@@ -59,14 +59,16 @@ const App = () => {
         if (description != null) {
             tempDesc = description;
         }
-        tempPriority = priority;
+        if (priority != null) {
+            tempPriority = priority;
+        }
 
         let req = new XMLHttpRequest();
         req.open("PATCH", `http://localhost:8080/updateItem/${tempID}?rawName=${tempName}&rawDesc=${tempDesc}&rawPriority=${tempPriority}`);
         req.onload = function() {
             setName(null);
             setDescription(null);
-            setPriority(false);
+            setPriority(null);
     
             formScreenEdit = false;
             grabData = true;
