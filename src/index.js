@@ -6,12 +6,17 @@ const root = createRoot(document.getElementById("priorityRoot"))
 let data;
 let grabData = true;
 let formScreenEdit = false;
-let updateID = 6;
+let formScreenAdd = false;
 
 let tempID = 0;
 let tempName = "";
 let tempDesc = "";
 let tempPriority = null;
+
+document.getElementById("create").addEventListener("click", function() {
+    formScreenAdd = true;
+    root.render(<App />)
+})
 
 function removeItem(id) {
     console.log(id)
@@ -24,24 +29,14 @@ function removeItem(id) {
     req.send();
 }
 
-function changePriority(id, status) {
-    if (status) {
-        let req = new XMLHttpRequest();
-        req.open("PATCH", `http://localhost:8080/updateItem/${id}?rawPriority=false`, true)
-        req.onload = function() {
-            grabData = true;
-            root.render(<App />)
-        }
-        req.send();
-    } else {
-        let req = new XMLHttpRequest();
-        req.open("PATCH", `http://localhost:8080/updateItem/${id}?rawPriority=true`)
-        req.onload = function() {
-            grabData = true;
-            root.render(<App />)
-        }
-        req.send();
+function changePriority(id, name, desc, status) {
+    let req = new XMLHttpRequest();
+    req.open("PATCH", `http://localhost:8080/updateItem/${id}`, true)
+    req.onload = function() {
+        grabData = true;
+        root.render(<App />)
     }
+    req.send(JSON.stringify({"name": name, "desc": desc, "topPriority": !status}));
 }
 
 const App = () => {
@@ -50,19 +45,18 @@ const App = () => {
     const [priority, setPriority] = useState(null)
 
     const exitForm = () => {
-        console.log("HERE");
         setName(null);
         setDescription(null);
         setPriority(null);
     
         formScreenEdit = false;
+        formScreenAdd = false;
         root.render(<App />);
     }
 
     const handleEdit = (event) => {
         event.preventDefault();
 
-        console.log(name + " " + description + " " + priority)
         if (name != null) {
             tempName = name;
         }
@@ -74,7 +68,7 @@ const App = () => {
         }
 
         let req = new XMLHttpRequest();
-        req.open("PATCH", `http://localhost:8080/updateItem/${tempID}?rawName=${tempName}&rawDesc=${tempDesc}&rawPriority=${tempPriority}`);
+        req.open("PATCH", `http://localhost:8080/updateItem/${tempID}`);
         req.onload = function() {
             setName(null);
             setDescription(null);
@@ -84,7 +78,34 @@ const App = () => {
             grabData = true;
             root.render(<App />)
         }
-        req.send();
+        req.send(JSON.stringify({"name": tempName, "desc": tempDesc, "topPriority": tempPriority}));
+    }
+
+    const handleAdd = (event) => {
+        event.preventDefault();
+
+        let newDesc = description;
+        let newPriority = priority;
+
+        if (description == null || description == "") {
+            newDesc = "no description";
+        }
+        if (priority == null) {
+            newPriority = false
+        }
+
+        let req = new XMLHttpRequest();
+        req.open("POST", `http://localhost:8080/addItem`);
+        req.onload = function() {
+            setName(null);
+            setDescription(null);
+            setPriority(null);
+    
+            formScreenAdd = false;
+            grabData = true;
+            root.render(<App />)
+        }
+        req.send(JSON.stringify({"name": name, "desc": newDesc, "topPriority": newPriority}));
     }
 
     if (grabData) {
@@ -107,7 +128,7 @@ const App = () => {
                             <button onClick={() => showFormEdit(item["id"], item["name"], item["desc"], item["topPriority"])}><img src = "edit.png" width = "40px" height = "40px"/></button>
                             <button onClick={() => removeItem(item["id"])}><img src = "trash.png" width = "40px" height = "40px" /></button>
                         </div>
-                        <button className = "priorityButton" onClick = {() => changePriority(item["id"], item["topPriority"])}><img className = "priorityImage" src = "Star.png" width = "35px" height = "35px"/></button>
+                        <button className = "priorityButton" onClick = {() => changePriority(item["id"], item["name"], item["desc"], item["topPriority"])}><img className = "priorityImage" src = "Star.png" width = "35px" height = "35px"/></button>
                     </div>
                 );
             }
@@ -122,7 +143,7 @@ const App = () => {
                             <button onClick={() => showFormEdit(item["id"], item["name"], item["desc"], item["topPriority"])}><img src = "edit.png" width = "40px" height = "40px"/></button>
                             <button onClick={() => removeItem(item["id"])}><img src = "trash.png" width = "40px" height = "40px" /></button>
                         </div>
-                        <button className = "priorityButton" onClick = {() => changePriority(item["id"], item["topPriority"])}><img className = "priorityImage" src = "uncheckedStar.png" width = "35px" height = "35px"/></button>
+                        <button className = "priorityButton" onClick = {() => changePriority(item["id"], item["name"], item["desc"], item["topPriority"])}><img className = "priorityImage" src = "uncheckedStar.png" width = "35px" height = "35px"/></button>
                     </div>
                 );
             }
@@ -157,6 +178,46 @@ const App = () => {
                                 Top Priority
                                 <br />
                                 <input checked = {tempPriority} id = "priorityEdit" className = "input-check" type = "checkbox" name = "rawPriority" onChange = {function(event) {setPriority(event.target.checked); tempPriority = event.target.checked; root.render(<App />)}}></input>
+                            </label>
+                            <br />  
+                            <br />
+                            <br />
+                            <input type = "submit" className = "input-submit"></input>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+        if (formScreenAdd) {
+            return (
+                <div className = "formContainer">
+                    <div className="grid-container priority-grid">{insertion}{normalInsertion}</div>
+                    <div className="blurCover"></div>
+                    <div className = "form">
+                        <button className = "exitForm" onClick={() => exitForm()}><img src = "back.png" width = "50px" height = "50px"/></button>
+                        <form className = "editForm" onSubmit={handleAdd}>
+                            <h1 className = "title">Create</h1>
+                            <br />
+                            <br />
+                            <br />
+                            <label className = "label">
+                                Name
+                                <br />
+                                <input required placeholder = "name" id = "nameEdit" className = "input-text" type = "text" name = "rawText" onChange={(event) => setName(event.target.value)}></input>
+                            </label>
+                            <br />
+                            <br />
+                            <label className = "label">
+                                Description
+                                <br />
+                                <input placeholder = "description" id = "descEdit" className = "input-text" type = "text" name = "rawDesc" onChange={(event) => setDescription(event.target.value)}></input>
+                            </label>
+                            <br />
+                            <br />
+                            <label className = "label">
+                                Top Priority
+                                <br />
+                                <input id = "priorityEdit" className = "input-check" type = "checkbox" name = "rawPriority" onChange = {function(event) {setPriority(event.target.checked)}}></input>
                             </label>
                             <br />  
                             <br />
