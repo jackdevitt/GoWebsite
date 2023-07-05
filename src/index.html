@@ -6,8 +6,17 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <div id = "portalRoot"></div>
         <div id = "header">
-            <h3 id = "title">To-Do<h3>
+            <img id = "logo" src = "logo.png" width = "65px" height = "65px" />
+            <h3 id = "title"></h3>
+            <div id = "tabs">
+                <button class = "tabButton" id = "todoTab">To-Do</button>
+                <button class = "tabButton" id = "completedTab">Completed</button>
+            </div>
+            <div id = "lastItems">
+                <input placeholder = "Search..." id = "searchbar" type = "text"></input>
+            </div>
             <button id = "create"><img src = "add.png" width = "50px" height = "50px"></button>
         </div>
         <div class = "outer-container" id = "priorityRoot"></div>
